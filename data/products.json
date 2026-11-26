@@ -5,5 +5,13 @@
   {"id": "104", "name": "Bremykt Butter 350g", "price": 46.90, "category": "Dairy"},
   {"id": "105", "name": "Bananas 1kg", "price": 24.90, "category": "Produce"},
   {"id": "106", "name": "Norvegia Cheese 500g", "price": 69.90, "category": "Dairy"},
-  {"id": "107", "name": "Gilde Minced Meat 400g", "price": 58.00, "category": "Meat"}
+  {"id": "107", "name": "Gilde Minced Meat 400g", "price": 58.00, "category": "Meat"},
+  {"id": "108", "name": "Mutti Crushed Tomatoes 400g", "price": 19.90, "category": "Canned Goods"},
+  {"id": "109", "name": "Idun Dry Yeast 5pk", "price": 16.50, "category": "Baking"},
+  {"id": "110", "name": "Eldorado Olive Oil 500ml", "price": 74.90, "category": "Pantry"},
+  {"id": "111", "name": "Barilla Spaghetti 500g", "price": 24.50, "category": "Pasta"},
+  {"id": "112", "name": "Garlic 3pk", "price": 18.00, "category": "Produce"},
+  {"id": "113", "name": "Yellow Onions 1kg", "price": 21.50, "category": "Produce"},
+  {"id": "114", "name": "Tine Sour Cream 300ml", "price": 23.90, "category": "Dairy"},
+  {"id": "115", "name": "Santa Maria Taco Shells 12pk", "price": 22.00, "category": "World Food"}
 ]

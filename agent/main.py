@@ -62,8 +62,10 @@ async def run_chat():
 
                 messages.append({"role": "user", "content": user_message})
 
-                # Inner loop: Let the agent call MCP tools until it has a final answer
-                while True:
+                # Inner loop: Let the agent call MCP tools (max 8 steps to prevent infinite loops)
+                steps = 0
+                while steps < 8:
+                    steps += 1
                     response = llm.chat.completions.create(
                         model=OLLAMA_MODEL,
                         messages=messages,
@@ -86,15 +88,9 @@ async def run_chat():
                         args = json.loads(tool_call.function.arguments)
                         print(f"  [MCP Tool]     {name}({args})")
 
-                        result = await session.call_tool(name, arguments=args)
-                        response_text = result.content[0].text if result.content else "No results found."
-                        print(f"  [MCP Response] {response_text}")
-
-                        messages.append({
-                            "role": "tool",
-                            "tool_call_id": tool_call.id,
-                            "content": response_text,
-                        })
-
-if __name__ == "__main__":
-    asyncio.run(run_chat())
+                        # Human-in-the-Loop guardrail for critical actions
+                        if name == "checkout":
+                            confirm = input("  ⚠️  Approve checkout and payment? [y/n]: ")
+                            if confirm.strip().lower() != "y":
+                                response_text = "Checkout was cancelled by the user. Do not retry checkout unless asked again."
+                                print(f"  [MCP Blocked]  {response_text}")

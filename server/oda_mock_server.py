@@ -45,5 +45,16 @@ def get_cart() -> dict:
     total = sum(item["subtotal"] for item in CART)
     return {"items": CART, "total_price": round(total, 2)}
 
+@mcp.tool()
+def checkout() -> str:
+    """ONLY call this tool when the user explicitly says 'checkout', 'pay', or 'complete order'. Never call this automatically after adding items."""
+    if not CART:
+        return "The shopping cart is empty. Add items before checking out."
+    
+    total = round(sum(item["subtotal"] for item in CART), 2)
+    item_count = sum(item["quantity"] for item in CART)
+    CART.clear()
+    return f"Order confirmed! Paid {total} NOK for {item_count} item(s). Your cart is now empty."
+
 if __name__ == "__main__":
     mcp.run()
