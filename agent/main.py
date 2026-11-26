@@ -38,7 +38,7 @@ async def run_agent(user_message: str):
                     "function": {
                         "name": t.name,
                         "description": t.description,
-                        "parameters": t.inputSchema,
+                        "parameters": t.input_schema,
                     },
                 }
                 for t in mcp_tools.tools
@@ -70,7 +70,7 @@ async def run_agent(user_message: str):
                     print(f"  [MCP Tool]     {name}({args})")
 
                     result = await session.call_tool(name, arguments=args)
-                    response_text = result.content[0].text
+                    response_text = result.content[0].text if result.content else "No results found."
                     print(f"  [MCP Response] {response_text}")
 
                     messages.append({
