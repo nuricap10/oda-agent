@@ -20,7 +20,7 @@ SERVER_SCRIPT = str(Path(__file__).parent.parent / "server" / "oda_mock_server.p
 
 llm = OpenAI(base_url=OLLAMA_BASE_URL, api_key="ollama")
 
-async def run_agent(user_message: str):
+async def run_chat():
     server_params = StdioServerParameters(
         command=sys.executable,
         args=[SERVER_SCRIPT],
@@ -46,39 +46,55 @@ async def run_agent(user_message: str):
 
             messages = [
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message},
             ]
 
-            print(f"User: {user_message}\n")
+            print("Oda Agent is ready! Type 'exit' to quit.\n")
 
+            # Outer loop: Interactive chat in the terminal
             while True:
-                response = llm.chat.completions.create(
-                    model=OLLAMA_MODEL,
-                    messages=messages,
-                    tools=tools,
-                )
-                msg = response.choices[0].message
-                messages.append(msg)
-
-                if not msg.tool_calls:
-                    print(f"\nAgent:\n{msg.content}")
+                user_message = input("You: ")
+                if user_message.strip().lower() in ["exit", "quit"]:
+                    print("Goodbye!")
                     break
 
-                for tool_call in msg.tool_calls:
-                    name = tool_call.function.name
-                    args = json.loads(tool_call.function.arguments)
-                    print(f"  [MCP Tool]     {name}({args})")
+                if not user_message.strip():
+                    continue
 
-                    result = await session.call_tool(name, arguments=args)
-                    response_text = result.content[0].text if result.content else "No results found."
-                    print(f"  [MCP Response] {response_text}")
+                messages.append({"role": "user", "content": user_message})
 
-                    messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "content": response_text,
-                    })
+                # Inner loop: Let the agent call MCP tools until it has a final answer
+                while True:
+                    response = llm.chat.completions.create(
+                        model=OLLAMA_MODEL,
+                        messages=messages,
+                        tools=tools,
+                    )
+                    msg = response.choices[0].message
+
+                    # Ignore empty responses from Ollama and keep looping
+                    if not msg.tool_calls and not msg.content:
+                        continue
+
+                    messages.append(msg)
+
+                    if not msg.tool_calls:
+                        print(f"\nAgent:\n{msg.content}\n")
+                        break
+
+                    for tool_call in msg.tool_calls:
+                        name = tool_call.function.name
+                        args = json.loads(tool_call.function.arguments)
+                        print(f"  [MCP Tool]     {name}({args})")
+
+                        result = await session.call_tool(name, arguments=args)
+                        response_text = result.content[0].text if result.content else "No results found."
+                        print(f"  [MCP Response] {response_text}")
+
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": response_text,
+                        })
 
 if __name__ == "__main__":
-    task = "I am making pancakes today. Find the ingredients I need in the store and add them to the cart."
-    asyncio.run(run_agent(task))
+    asyncio.run(run_chat())
