@@ -1,0 +1,9 @@
+[
+  {"id": "101", "name": "Tine Whole Milk 1L", "price": 22.90, "category": "Dairy"},
+  {"id": "102", "name": "Prior Eggs 12pk", "price": 44.50, "category": "Eggs"},
+  {"id": "103", "name": "Møllerens Wheat Flour 2kg", "price": 28.00, "category": "Baking"},
+  {"id": "104", "name": "Bremykt Butter 350g", "price": 46.90, "category": "Dairy"},
+  {"id": "105", "name": "Bananas 1kg", "price": 24.90, "category": "Produce"},
+  {"id": "106", "name": "Norvegia Cheese 500g", "price": 69.90, "category": "Dairy"},
+  {"id": "107", "name": "Gilde Minced Meat 400g", "price": 58.00, "category": "Meat"}
+]
