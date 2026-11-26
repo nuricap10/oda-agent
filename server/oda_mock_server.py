@@ -22,6 +22,14 @@ def search_products(query: str) -> str:
     if not matches:
         return f"No products found for '{query}'. Try searching for a single basic ingredient like 'milk', 'eggs', 'flour', or 'butter'."
     return json.dumps(matches)
+
+@mcp.tool()
+def add_to_cart(product_id: str, quantity: int = 1) -> str:
+    """Add a product to the shopping cart using its product_id."""
+    products = load_products()
+    product = next((p for p in products if p["id"] == product_id), None)
+    if not product:
+        return f"No product found with ID {product_id}. Search for the product first to find the correct ID."
     
     CART.append({
         "id": product["id"],
